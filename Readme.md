@@ -1,0 +1,1 @@
+#Compare 2 Images using ImageMagic with Threshold
