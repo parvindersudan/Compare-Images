@@ -14,19 +14,19 @@
   if($_POST['url'] != ""){
     $url = $_POST['url'];
   } else {
-    $url = "http://www.moebel.de/wohnen/sofas";
+    $url = "";
   }
 
   if($_POST['image1'] != ""){
     $image1 = $_POST['image1'];
   } else {
-    $image1 = "http://www.moebel.de/xyz/9633970192414/214x214/wickelaufsatz-dolce.jpg";
+    $image1 = "";
   }
 
   if($_POST['image2'] != ""){
     $image2 = $_POST['image2'];
   } else {
-    $image2 = "http://www.moebel.de/xyz/9633994899486/214x214/wickelaufsatz-aviano.jpg";
+    $image2 = "";
   }
 
   if($_POST['libpuzzlethreshold'] != ""){
@@ -70,7 +70,6 @@
 
     <form name="form1" action="" method="post">
       <table border="1" width="800" style="font-family: verdana; font-size:12px;">
-        <tr><td>Enter the Moebel product listing Url to crawl</td><td><input type="text" name="url" style="width:400px;" value="<?=$url?>"></td></tr>
         <tr><td>Enter the Moebel Image 1 Url</td><td><input type="text" name="image1" style="width:400px;" value="<?=$image1?>"></td></tr>
         <tr><td>Enter the Moebel Image 2 Url</td><td><input type="text" name="image2" style="width:400px;" value="<?=$image2?>"></td></tr>        
         <tr>
@@ -112,58 +111,8 @@
         <tr><td colspan='2' align='left'><input type="submit" value="Submit"></td></tr>
       </table>
     </form>
-
     <? 
-      if($_POST['url'] != ""){
-
-        $newurl=$_POST['url'];
-
-        $html = file_get_html($newurl);
-
-        if(is_null($html) || $html==''){
-          echo "<p>Please try again</p>";
-          exit();
-        }
-
-        $cnt=0;
-
-        echo '<ul class="products">';
-
-        foreach($html->find('div.product_box_container') as $product) {
-
-          //get Title
-          $title = trim($product->find('div.subcategor_slideimgtitle', 0)->plaintext);
-          $image = trim($product->find('div.product_box_images', 0)->getAttribute('style'));
-          $image = str_replace("'","",$image);
-          $image = str_replace("'","",$image);
-          $image = str_replace("(","",$image);
-          $image = str_replace(")","",$image);
-          $image = str_replace(";","",$image);
-          $image = str_replace("background-image:url","",$image);
-
-          //$productpk = trim($product->find('li.tab_leaflet', 0)->getAttribute('id'));
-          //$productpk = str_replace("markenTab","",$productpk);
-
-
-          // $item['title'] = trim($title);
-          // $item['image'] = trim($image);
-          // $item['pk'] = trim($productpk);
-
-          // $Records[] = $item;
-
-          echo '
-          <li>
-          <img src="'.$image.'">
-          <h4>'.$title.'</h4>
-          </li>';               
-        }
-
-        echo "</ul>";
-      }
-
-
       if($_POST['image1'] != "" && $_POST['image2'] != ""){
-
 
         $image1 = IMAGES_PATH."image1.jpg";
         file_put_contents($image1, file_get_contents($_POST['image1']));
@@ -180,22 +129,14 @@
         # Compute the distance between both signatures
         $d = puzzle_vector_normalized_distance($cvec1, $cvec2);
 
-
         # Are pictures similar?
         if ($d < $libpuzzlethreshold) {
-          //$result =  "Pictures are looking similar, distance=$d\n";
           $result =  "Yes";
         } else {
-          //$result = "Pictures are different, distance=$d\n";
           $result =  "No";
         }
 
-
-
         # Compress the signatures for database storage
-        //$compress_cvec1 = puzzle_compress_cvec($cvec1);
-        //$compress_cvec2 = puzzle_compress_cvec($cvec2);
-
         echo "<table width='1200' cellspacing='0' cellpadding='5' style='font-family: verdana; font-size:12px;'>
         <tr>
         <td width='350px;' style='font-weight:bold;text-align:center;'>Image 1</td>
@@ -224,14 +165,10 @@
         <td align='center' valign='top'>".$result."</td>
         </tr>";
 
-
-
-
         $differenceImage = IMAGES_PATH."difference.jpg";
+		
         //-verbose
         $command = $pathToCompare." -metric RMSE ".$image1." ".$image2." ".$differenceImage;
-        //echo "<BR>".$command;
-        //$exe = `$command`;  
         $distanceImageMagic = exec($command." 2>&1");
 
         $distanceImageMagicArr = explode(" ",$distanceImageMagic);
@@ -245,7 +182,6 @@
           $resultImageMagic="Yes";
         }
 
-
         //dispaly the details
         echo "<tr>
         <td align='center' valign='top'>ImageMagic with Threshold : ".$imagemagicthreshold."</td>
@@ -253,16 +189,8 @@
         <td align='center' valign='top'>".$resultImageMagic."</td>
         </tr>";
 
-
-
         echo "</table>";  
-
       }
     ?>
-
-
-
-
-
   </body>
 </html>
