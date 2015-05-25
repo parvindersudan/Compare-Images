@@ -112,30 +112,6 @@
       </table>
     </form>
     <? 
-      if($_POST['image1'] != "" && $_POST['image2'] != ""){
-
-        $image1 = IMAGES_PATH."image1.jpg";
-        file_put_contents($image1, file_get_contents($_POST['image1']));
-        chmod($image1,0666);
-
-        $image2 = IMAGES_PATH."image2.jpg";
-        file_put_contents($image2, file_get_contents($_POST['image2']));
-        chmod($image2,0666);
-
-        # Compute signatures for two images
-        $cvec1 = puzzle_fill_cvec_from_file($image1);
-        $cvec2 = puzzle_fill_cvec_from_file($image2);
-
-        # Compute the distance between both signatures
-        $d = puzzle_vector_normalized_distance($cvec1, $cvec2);
-
-        # Are pictures similar?
-        if ($d < $libpuzzlethreshold) {
-          $result =  "Yes";
-        } else {
-          $result =  "No";
-        }
-
         # Compress the signatures for database storage
         echo "<table width='1200' cellspacing='0' cellpadding='5' style='font-family: verdana; font-size:12px;'>
         <tr>
@@ -169,6 +145,7 @@
 		
         //-verbose
         $command = $pathToCompare." -metric RMSE ".$image1." ".$image2." ".$differenceImage;
+
         $distanceImageMagic = exec($command." 2>&1");
 
         $distanceImageMagicArr = explode(" ",$distanceImageMagic);
@@ -190,7 +167,6 @@
         </tr>";
 
         echo "</table>";  
-      }
     ?>
   </body>
 </html>
